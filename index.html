@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbo Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🍕</span>
+                <h1 class="logo-text">Carbo Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <span class="current-time" id="currentTime"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="menu">
+                        <span class="nav-icon">🍕</span>
+                        <span class="nav-text">Menu</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="orders">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-text">Ordini</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="deliveries">
+                        <span class="nav-icon">🚚</span>
+                        <span class="nav-text">Consegne</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <section id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="todayOrders">0</div>
+                            <div class="stat-label">Ordini Oggi</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="todayRevenue">€0</div>
+                            <div class="stat-label">Ricavi Giornalieri</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="pendingOrders">0</div>
+                            <div class="stat-label">Ordini in Corso</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="topPizza">-</div>
+                            <div class="stat-label">Pizza Più Venduta</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="chart-container" style="position: relative; height: 400px;">
+                    <h3>Vendite per Tipo di Pizza</h3>
+                    <canvas id="salesChart"></canvas>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Ultimi Ordini</h3>
+                    </div>
+                    <div class="card__body">
+                        <div id="recentOrdersList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Page -->
+            <section id="menu-page" class="page">
+                <div class="page-header">
+                    <h2>Gestione Menu</h2>
+                    <button class="btn btn--primary" id="addPizzaBtn">Aggiungi Pizza</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <input type="text" id="menuSearch" class="form-control" placeholder="Cerca pizza...">
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">Tutte le categorie</option>
+                        <option value="Classica">Classica</option>
+                        <option value="Gourmet">Gourmet</option>
+                        <option value="Vegana">Vegana</option>
+                    </select>
+                </div>
+
+                <!-- Pizza List -->
+                <div id="pizzaList" class="pizza-grid"></div>
+            </section>
+
+            <!-- Orders Page -->
+            <section id="orders-page" class="page">
+                <div class="page-header">
+                    <h2>Gestione Ordini</h2>
+                    <button class="btn btn--primary" id="newOrderBtn">Nuovo Ordine</button>
+                </div>
+
+                <!-- Order Filters -->
+                <div class="filters">
+                    <select id="statusFilter" class="form-control">
+                        <option value="">Tutti gli stati</option>
+                        <option value="Ricevuto">Ricevuto</option>
+                        <option value="In preparazione">In preparazione</option>
+                        <option value="Pronto">Pronto</option>
+                        <option value="In consegna">In consegna</option>
+                        <option value="Consegnato">Consegnato</option>
+                    </select>
+                </div>
+
+                <!-- Orders List -->
+                <div id="ordersList"></div>
+            </section>
+
+            <!-- Deliveries Page -->
+            <section id="deliveries-page" class="page">
+                <div class="page-header">
+                    <h2>Gestione Consegne</h2>
+                </div>
+
+                <!-- Drivers Status -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Stato Driver</h3>
+                    </div>
+                    <div class="card__body">
+                        <div id="driversList"></div>
+                    </div>
+                </div>
+
+                <!-- Deliveries List -->
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Consegne Attive</h3>
+                    </div>
+                    <div class="card__body">
+                        <div id="deliveriesList"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal for Adding/Editing Pizza -->
+    <div id="pizzaModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Aggiungi Pizza</h3>
+                <button class="btn-close" id="closePizzaModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="pizzaForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome</label>
+                        <input type="text" id="pizzaName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prezzo (€)</label>
+                        <input type="number" id="pizzaPrice" class="form-control" step="0.50" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select id="pizzaCategory" class="form-control" required>
+                            <option value="">Seleziona categoria</option>
+                            <option value="Classica">Classica</option>
+                            <option value="Gourmet">Gourmet</option>
+                            <option value="Vegana">Vegana</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ingredienti (separati da virgola)</label>
+                        <input type="text" id="pizzaIngredients" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrizione</label>
+                        <textarea id="pizzaDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--secondary" id="cancelPizza">Annulla</button>
+                        <button type="submit" class="btn btn--primary">Salva</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New Order -->
+    <div id="orderModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuovo Ordine</h3>
+                <button class="btn-close" id="closeOrderModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label class="form-label">Cliente</label>
+                        <input type="text" id="customerName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefono</label>
+                        <input type="tel" id="customerPhone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Indirizzo</label>
+                        <input type="text" id="customerAddress" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Pizze</label>
+                        <div id="orderItems"></div>
+                        <button type="button" class="btn btn--secondary btn--sm" id="addOrderItem">Aggiungi Pizza</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Totale: <span id="orderTotal">€0.00</span></label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn--secondary" id="cancelOrder">Annulla</button>
+                        <button type="submit" class="btn btn--primary">Crea Ordine</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
